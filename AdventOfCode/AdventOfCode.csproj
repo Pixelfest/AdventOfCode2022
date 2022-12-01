@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Output" />
-    </ItemGroup>
-
-    <ItemGroup>
       <None Update="Input\01.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
