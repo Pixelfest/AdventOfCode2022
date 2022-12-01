@@ -1,35 +1,40 @@
-﻿// See https://aka.ms/new-console-template for more information
-void Empty()
+﻿using AdventOfCode;
+
+Utils.Title("Welcome to AdventOfCode 2022");
+
+Menu:
+
+var assignments = Utils.LoadAssignments();
+var count = 0;
+foreach (var assignment in assignments)
 {
-    Console.WriteLine("");
+    Console.WriteLine($"{++count}: {assignment.Name}");
 }
-void Title(string title)
+Console.WriteLine("E: Exit");
+Console.Write("Chose assignment: ");
+var input = Console.ReadLine();
+
+if (int.TryParse(input, out int value))
 {
-    const int titleLength = 60;
-    Console.WriteLine(new string('=', titleLength));
-    Console.Write(new string('=', (titleLength - title.Length) / 2 - 2));
-    Console.Write($" {title} ");
-    Console.Write(new string('=', titleLength - 2 - title.Length - ((titleLength - title.Length) / 2 - 2)));
-    Console.Write("\n");
-    Console.WriteLine(new string('=', titleLength));
+    var type = assignments[value - 1];
+    var assignment = (IAmAnAssignment)Activator.CreateInstance(type);
+
+    Utils.Title(type.Name);
+    
+    assignment.Process();
+    assignment.PrintOutput();
+    assignment.SaveOutput();
+    Utils.Empty();
+    Utils.Empty();
+    goto Menu;
 }
 
-Title("Hello");
-Empty();
+if (input.ToUpperInvariant() == "E")
+    goto Exit;
 
-var assignmentReader = new AssignmentReader01("Input/01.txt");
+Utils.Empty();
+Console.WriteLine("I don't understand.");
+goto Menu;
 
-Title("Input");
-assignmentReader.PrintInput();
-Empty();
-
-Title("Output");
-assignmentReader.PrintOutput();
-Empty();
-Empty();
-
-Console.WriteLine("Saving output...");
-assignmentReader.SaveOutput("Output/01.txt");
-Console.WriteLine("Done, bye!");
-
-Console.ReadLine();
+Exit:
+Console.WriteLine("Bye!");
