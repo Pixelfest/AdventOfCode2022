@@ -24,7 +24,7 @@ public class Assignment01A : Assignment, IAmAnAssignment
     {
         var elve = _list.MaxBy(e => e.Inventory.Sum());
 
-        Output = $"{elve.ElveName} carries {elve.Inventory.Sum()} calories";
+        Output = $"{elve?.ElveName} carries {elve?.Inventory.Sum()} calories";
     }
 
     protected override void ReadLine(string line)

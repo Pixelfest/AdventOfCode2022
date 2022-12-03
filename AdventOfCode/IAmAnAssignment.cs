@@ -4,5 +4,5 @@ public interface IAmAnAssignment
 {
     void Process();
     void PrintOutput();
-    void SaveOutput();
+    void ToFileAndClipboard();
 }

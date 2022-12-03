@@ -2,11 +2,11 @@
 
 namespace AdventOfCode;
 
-public class Assignment03B : Assignment, IAmAnAssignment
+public class Assignment04A : Assignment, IAmAnAssignment
 {
-    public Assignment03B()
+    public Assignment04A()
     {
-        Load("Input/03.txt");
+        Load("Input/04.sample.txt");
     }
 
     private readonly List<Elf> _list = new();

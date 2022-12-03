@@ -4,24 +4,23 @@ namespace AdventOfCode;
 
 public class Assignment03A : Assignment, IAmAnAssignment
 {
-    private int count = 0;
-    class Elve
-    {
-        public string Name { get; set; }
-        public List<byte> Inventory1 { get; set; } = new List<byte>();
-        public List<byte> Inventory2 { get; set; } = new List<byte>();
-    }
-    
-    private readonly List<Elve> _list = new();
-
     public Assignment03A()
     {
         Load("Input/03.txt");
     }
+    
+    class Elf
+    {
+        public List<byte> Inventory1 { get; init; } = new();
+        public List<byte> Inventory2 { get; init; } = new();
+    }
+    
+    private readonly List<Elf> _list = new();
 
     public override void Process()
     {
         var total = 0;
+        
         foreach (var elf in _list)
         {
             var item = elf.Inventory1.FirstOrDefault(item1 => elf.Inventory2.Contains(item1));
@@ -35,13 +34,12 @@ public class Assignment03A : Assignment, IAmAnAssignment
     {
         var half = line.Length / 2;
 
-        var elve = new Elve
+        var elf = new Elf
         {
-            Name = $"Elve {++count}",
             Inventory1 = line.Take(half).Select(Get).ToList(),
             Inventory2 = line.Skip(half).Select(Get).ToList()
         };
-        _list.Add(elve);
+        _list.Add(elf);
     }
 
     private byte Get(Char a)

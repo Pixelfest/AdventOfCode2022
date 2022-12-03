@@ -4,11 +4,9 @@ public class Assignment02A : Assignment, IAmAnAssignment
 {
     class Elve
     {
-        public string ElveName { get; }
-        public (string, string) Inventory { get; set; } = new();
+        public (string, string) Inventory { get; set; }
         public int Score { get; set; }
     }
-    private int Total { get; set; }
     private readonly List<Elve> _list = new();
 
     public Assignment02A()
@@ -59,13 +57,12 @@ public class Assignment02A : Assignment, IAmAnAssignment
             }
         }
         
-Console.WriteLine($"Input {_list.Count}");
-        Output = $"Total scrore would be {_list.Select(l => l.Score).Sum()}";
+        Console.WriteLine($"Input {_list.Count}");
+        Output = $"{_list.Select(l => l.Score).Sum()}";
     }
 
     protected override void ReadLine(string line)
     {
-        
-            _list.Add(new Elve { Inventory = (line.Split(' ')[0], line.Split(' ')[1])});
+        _list.Add(new Elve { Inventory = (line.Split(' ')[0], line.Split(' ')[1])});
     }
 }

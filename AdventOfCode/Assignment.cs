@@ -1,9 +1,11 @@
-﻿namespace AdventOfCode;
+﻿using TextCopy;
+
+namespace AdventOfCode;
 
 public abstract class Assignment : IAmAnAssignment
 {
     protected string Output = "There is no output.\nAt least not yet.";
-    
+
     public abstract void Process();
     protected abstract void ReadLine(string line);
     
@@ -12,19 +14,22 @@ public abstract class Assignment : IAmAnAssignment
         using StreamReader reader = new StreamReader(fileInput);
         while (!reader.EndOfStream)
         {
-            ReadLine(reader.ReadLine());
+            ReadLine(reader.ReadLine() ?? string.Empty);
         }
     }
+    
     public void PrintOutput()
     {
         Console.Write(Output);
     }
 
-    public void SaveOutput()
+    public void ToFileAndClipboard()
     {
         Directory.CreateDirectory("Output");
         using var streamWriter = new StreamWriter(Path.Combine("Output", $"{this.GetType().Name}.txt"), options: new FileStreamOptions { Mode = FileMode.Create, Access = FileAccess.Write });
 
         streamWriter.Write(Output);
+        
+        ClipboardService.SetText(Output);
     }
 }
