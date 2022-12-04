@@ -2,6 +2,11 @@
 
 public class Assignment01B : Assignment, IAmAnAssignment
 {
+    public Assignment01B()
+    {
+        Load("Input/01.txt");
+    }
+
     class Elve
     {
         public Elve(int elveNumber)
@@ -14,11 +19,6 @@ public class Assignment01B : Assignment, IAmAnAssignment
     }
     
     private readonly List<Elve> _list = new();
-
-    public Assignment01B()
-    {
-        Load("Input/01.txt");
-    }
 
     public override void Process()
     {

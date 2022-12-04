@@ -2,9 +2,9 @@
 
 namespace AdventOfCode;
 
-public class Assignment04A : Assignment, IAmAnAssignment
+public class Assignment04B : Assignment, IAmAnAssignment
 {
-    public Assignment04A()
+    public Assignment04B()
     {
         Load("Input/04.txt");
     }
@@ -34,8 +34,8 @@ public class Assignment04A : Assignment, IAmAnAssignment
 
         foreach (var helper in _list)
         {
-            if (helper.Elf1.TrueForAll(item => helper.Elf2.Contains(item)) ||
-                helper.Elf2.TrueForAll(item => helper.Elf1.Contains(item)))
+            if (helper.Elf1.Any(item => helper.Elf2.Contains(item)) ||
+                helper.Elf2.Any(item => helper.Elf1.Contains(item)))
                 total++;
         }
         

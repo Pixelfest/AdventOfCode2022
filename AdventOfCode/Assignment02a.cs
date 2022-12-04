@@ -2,17 +2,17 @@
 
 public class Assignment02A : Assignment, IAmAnAssignment
 {
+    public Assignment02A()
+    {
+        Load("Input/02.txt");
+    }
+
     class Elve
     {
         public (string, string) Inventory { get; set; }
         public int Score { get; set; }
     }
     private readonly List<Elve> _list = new();
-
-    public Assignment02A()
-    {
-        Load("Input/02.txt");
-    }
 
     public override void Process()
     {
