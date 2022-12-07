@@ -4,7 +4,7 @@ static class Program
 {
     public static void Main(string[] args)
     {
-        Run(new Assignment06A());
+        Run(new Assignment07B());
 
         Console.WriteLine("Bye!");
     }
