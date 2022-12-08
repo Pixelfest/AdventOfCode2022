@@ -1,8 +1,4 @@
-﻿using System.Data.SqlTypes;
-using System.IO.Compression;
-using System.Net.Mime;
-
-namespace AdventOfCode;
+﻿namespace AdventOfCode;
 
 public class Assignment07B : Assignment, IAmAnAssignment
 {
