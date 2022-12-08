@@ -5,16 +5,22 @@ namespace AdventOfCode;
 public abstract class Assignment : IAmAnAssignment
 {
     protected string Output = "There is no output.\nAt least not yet.";
-
+    protected int CurrentLine = 0;
+    protected int TotalLines = 0;
+    
     public abstract void Process();
+    
     protected abstract void ReadLine(string line);
     
     protected void Load(string fileInput)
     {
+        TotalLines = File.ReadAllLines(fileInput).Length;
+        
         using StreamReader reader = new StreamReader(fileInput);
         while (!reader.EndOfStream)
         {
             ReadLine(reader.ReadLine() ?? string.Empty);
+            CurrentLine++;
         }
     }
     

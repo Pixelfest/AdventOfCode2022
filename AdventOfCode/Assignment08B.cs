@@ -48,6 +48,7 @@ public class Assignment08B : Assignment, IAmAnAssignment
     
     protected override void ReadLine(string line)
     {
+        Console.WriteLine(CurrentLine);
         forest.Add(line.ToCharArray().Select(c => new Tree { Height = int.Parse(c.ToString())}).ToList());
     }
 
