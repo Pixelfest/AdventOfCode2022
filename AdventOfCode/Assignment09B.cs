@@ -2,9 +2,9 @@
 
 namespace AdventOfCode;
 
-public class Assignment09A : Assignment, IAmAnAssignment
+public class Assignment09B : Assignment, IAmAnAssignment
 {
-    public Assignment09A()
+    public Assignment09B()
     {
         Load("Input/09.txt");
     }
@@ -71,8 +71,7 @@ public class Assignment09A : Assignment, IAmAnAssignment
         }
     }
 
-    public List<Position> HeadPositions { get; set; } = new List<Position> { new Position() };
-    public List<Position> TailPositions { get; set; } = new List<Position> { new Position() };
+    public List<List<Position>> Rope { get; set; } = new List<List<Position>>();
     
     protected override void ReadLine(string line)
     {
@@ -82,51 +81,54 @@ public class Assignment09A : Assignment, IAmAnAssignment
         Moves.Add(new Move{ Direction = split[0], Count = int.Parse(split[1])});
     }
 
+    public int JustOne(int input)
+    {
+        if (input == 0)
+            return 0;
+        if (input > 0)
+            return 1;
+
+        return -1;
+    }
+    
     public override void Process()
     {
+        int ropeLength = 10;
+
+        for (int i = 0; i < ropeLength; i++)
+        {
+            Rope.Add(new List<Position> { new Position() });
+        }
+
         foreach (var move in Moves)
         {
             for (int i = 0; i < move.Count; i++)
             {
-                var head = Position.FromMove(HeadPositions.Last(), move.Direction);
-                HeadPositions.Add(head);
+                var head = Position.FromMove(Rope[0].Last(), move.Direction);
+                Rope[0].Add(head);
 
-                var currentTail = TailPositions.Last();
+                for (int j = 1; j < ropeLength; j++)
+                {
+                    var currentTail = Rope[j].Last();
 
-                var xD = head.X - currentTail.X;
-                var yD = head.Y - currentTail.Y;
+                    var xD = Rope[j - 1].Last().X - currentTail.X;
+                    var yD = Rope[j - 1].Last().Y - currentTail.Y;
 
-                if (Math.Abs(xD) == 2 && Math.Abs(yD) == 0)
-                {
-                    // move along X
-                    TailPositions.Add(new Position(currentTail.X + xD / 2, currentTail.Y));
-                }
-                else if (Math.Abs(xD) == 0 && Math.Abs(yD) == 2)
-                {
-                    // move along Y
-                    TailPositions.Add(new Position(currentTail.X, currentTail.Y + yD / 2));
-                }
-                else if (Math.Abs(xD) == 2 && Math.Abs(yD) == 1)
-                {
-                    // Diagonally direction X
-                    TailPositions.Add(new Position(currentTail.X + xD / 2, currentTail.Y + yD));
-                }
-                else if (Math.Abs(xD) == 1 && Math.Abs(yD) == 2)
-                {
-                    // Diagonally direction Y
-                    TailPositions.Add(new Position(currentTail.X + xD, currentTail.Y + yD / 2));
-                    
-                }
-                else // if (Math.Abs(xD) < 2 && Math.Abs(yD) < 2)
-                {
-                    // No movement of tail
-                    TailPositions.Add(new Position(currentTail.X, currentTail.Y));
+                    if (Math.Abs(xD) < 2 && Math.Abs(yD) < 2)
+                    {
+                        // No movement of tail
+                        Rope[j].Add(new Position(currentTail.X, currentTail.Y));
+                    }
+                    else
+                    {
+                        Rope[j].Add(new Position(currentTail.X + JustOne(xD), currentTail.Y + JustOne(yD)));
+                    }
                 }
             }
         }
-        
+
         //Console.WriteLine($"Total lines in file: {TotalLines}");
-        var count = TailPositions.Distinct().Count();
+        var count = Rope.Last().Distinct().Count();
         Output = count.ToString();
     }
 }
