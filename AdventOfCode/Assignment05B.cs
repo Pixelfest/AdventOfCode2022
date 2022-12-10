@@ -1,7 +1,4 @@
-﻿using System.Data.SqlTypes;
-using System.Text;
-
-namespace AdventOfCode;
+﻿namespace AdventOfCode;
 
 public class Assignment05B : Assignment, IAmAnAssignment
 {

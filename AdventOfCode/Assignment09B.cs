@@ -1,6 +1,4 @@
-﻿using System.Windows.Markup;
-
-namespace AdventOfCode;
+﻿namespace AdventOfCode;
 
 public class Assignment09B : Assignment, IAmAnAssignment
 {

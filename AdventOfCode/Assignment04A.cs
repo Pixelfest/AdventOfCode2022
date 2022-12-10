@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace AdventOfCode;
+﻿namespace AdventOfCode;
 
 public class Assignment04A : Assignment, IAmAnAssignment
 {
