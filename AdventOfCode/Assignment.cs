@@ -11,11 +11,11 @@ public abstract class Assignment : IAmAnAssignment
     public abstract void Process();
     
     protected abstract void ReadLine(string line);
-    
+
     protected void Load(string fileInput)
     {
         TotalLines = File.ReadAllLines(fileInput).Length;
-        
+
         using StreamReader reader = new StreamReader(fileInput);
         while (!reader.EndOfStream)
         {
