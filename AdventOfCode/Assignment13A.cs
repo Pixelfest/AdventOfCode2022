@@ -21,10 +21,10 @@ public class Assignment13A : Assignment, IAmAnAssignment
         
         while (true)
         {
-            var string1 = input[current];
-            var string2 = input[current + 1];
+            LOL lol1 = Parse(input[current]);
+            LOL lol2 = Parse(input[current + 1]);
 
-            if (Compare(string1, string2) > 1)
+            if (Compare(lol1, lol2) > 1)
             {
                 total += index;
             }
@@ -74,12 +74,39 @@ public class Assignment13A : Assignment, IAmAnAssignment
         }
         
         // Others
-        while(lol1.Items.Any())
-        return Compare(lol1.Items.First(), lol2.Items.First());
+        while (lol1.Items.Any() || lol2.Items.Any())
+        {
+            // [1] versus [1,2] 
+            if (lol1.Items.Any() && !lol2.Items.Any())
+            {
+                return 1;
+            }
+            if (!lol1.Items.Any() && lol2.Items.Any())
+            {
+                return -1;
+            }
+            
+            var result = Compare(lol1.Items.First(), lol2.Items.First());
+
+            if (result == 0)
+            {
+                lol1.Items.RemoveAt(0);
+                lol2.Items.RemoveAt(0);
+            }
+            else
+            {
+                return result;
+            }
+        }
+
+        return Compare(lol1.Parent, lol2.Parent);
     }
 
-    public LOL Parse(LOL currentLol, string s)
+    public LOL Parse(string s, LOL? currentLol = null)
     {
+        if (currentLol == null)
+            currentLol = new LOL();
+        
         while (s.Length > 0)
         {
             if (s.StartsWith("["))
@@ -95,10 +122,19 @@ public class Assignment13A : Assignment, IAmAnAssignment
                 s = s.Remove(0, 1);
                 currentLol = currentLol.Parent;
             }
-            else if (s.Split(",").Length > 0 && int.TryParse(s.Split(",")[0], out int value))
+            else if (s.Split(",").Length > 0 && int.TryParse(s.Split(",")[0], out int value1))
             {
-                currentLol.Items.Add(new LOL { Value = value});
-                s = s.Remove(0, value.ToString().Length);
+                currentLol.Items.Add(new LOL { Value = value1});
+                s = s.Remove(0, value1.ToString().Length);
+            }
+            else if (s.StartsWith(","))
+            {
+                s = s.Remove(0, 1);
+            }
+            else if (int.TryParse(s.Split("]")[0], out int value2))
+            {
+                currentLol.Items.Add(new LOL { Value = value2});
+                s = s.Remove(0, value2.ToString().Length);
             }
         }
 
