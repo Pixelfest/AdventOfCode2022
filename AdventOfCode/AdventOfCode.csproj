@@ -81,9 +81,16 @@
       <None Update="Input\12.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="Input\13.sample.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Input\13.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
       <PackageReference Include="TextCopy" Version="6.2.0" />
     </ItemGroup>
 

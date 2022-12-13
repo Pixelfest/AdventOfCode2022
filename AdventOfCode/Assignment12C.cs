@@ -1,8 +1,11 @@
-﻿namespace AdventOfCode;
+﻿using System.Drawing;
+using System.Drawing.Imaging;
 
-public class Assignment12B : Assignment, IAmAnAssignment
+namespace AdventOfCode;
+
+public class Assignment12C : Assignment, IAmAnAssignment
 {
-    public Assignment12B()
+    public Assignment12C()
     {
         Load("Input/12.txt");
     }
@@ -13,18 +16,15 @@ public class Assignment12B : Assignment, IAmAnAssignment
         {
             Elevation = 0;
             DistanceToEnd = -1;
-            IsRoute = false;
         }
 
         public int Elevation { get; set; }
         public int DistanceToEnd { get; set; }
-        public bool IsRoute { get; set; }
     }
 
     private MapPoint[,] map;
     private (int x, int y) start;
     private (int x, int y) end;
-    //private (int x, int y) currentPosition;
     private bool init;
     private int index;
     private int MapSizeX { get; set; }
@@ -106,54 +106,54 @@ public class Assignment12B : Assignment, IAmAnAssignment
         AnalyzePoint(currentPosition, (currentPosition.x, currentPosition.y + 1));
         AnalyzePoint(currentPosition, (currentPosition.x - 1, currentPosition.y));
 
+        using Bitmap bmp = new(MapSizeX, MapSizeY);
+        using Graphics gfx = Graphics.FromImage(bmp);
+        //gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-        int currentDistance = map[start.x, start.y].DistanceToEnd;
-        currentPosition = (start.x, start.y);
-        while (currentDistance > 0)
-        {
-            currentDistance = currentDistance - 1;
+        List<Color> colors = new List<Color>();
+        for (int i = 0; i < 255; i++)
+            colors.Add(Color.FromArgb(255, i, 0));
+        for (int i = 0; i < 255; i++)
+            colors.Add(Color.FromArgb(255-i, 255, 0));
+        for (int i = 0; i < 255; i++)
+            colors.Add(Color.FromArgb(0, 255, i));
+        for (int i = 0; i < 255; i++)
+            colors.Add(Color.FromArgb(0, 255-i, 255));
+        for (int i = 0; i < 255; i++)
+            colors.Add(Color.FromArgb(i, 0, 255));
+        //for (int i = 0; i < 255; i++)
+        //    colors.Add(Color.FromArgb(0, 255-i, i));
 
-            if (currentPosition.y < MapSizeY-1 && map[currentPosition.x, currentPosition.y + 1].DistanceToEnd == currentDistance)
-            {
-                currentPosition = (currentPosition.x, currentPosition.y + 1);
-                map[currentPosition.x, currentPosition.y].IsRoute = true;
-                continue;
-            }
-            if (currentPosition.y > 0 && map[currentPosition.x, currentPosition.y - 1].DistanceToEnd == currentDistance)
-            {
-                currentPosition = (currentPosition.x, currentPosition.y - 1);
-                map[currentPosition.x, currentPosition.y].IsRoute = true;
-                continue;
-            }
-            if (currentPosition.x < MapSizeX-1 && map[currentPosition.x + 1, currentPosition.y].DistanceToEnd == currentDistance)
-            {
-                currentPosition = (currentPosition.x + 1, currentPosition.y);
-                map[currentPosition.x, currentPosition.y].IsRoute = true;
-                continue;
-            }
-            if (currentPosition.x > 0 && map[currentPosition.x - 1, currentPosition.y].DistanceToEnd == currentDistance)
-            {
-                currentPosition = (currentPosition.x - 1, currentPosition.y);
-                map[currentPosition.x, currentPosition.y].IsRoute = true;
-                continue;
-            }
-        }
-        
-        Console.WriteLine("Result");
+        int maxDistance = map.Cast<MapPoint>().Select(m => m.DistanceToEnd).Max();
+        var per = ((colors.Count - 1) / (float)maxDistance);
         for (int y = 0; y < map.GetLength(1); y++)
         {
             for (int x = 0; x < map.GetLength(0); x++)
             {
-                var note = (x, y) == end ? "E" : (x, y) == start ? "S" : null;
-                if (map[x, y].IsRoute)
-                    note = "█";
-                Console.Write($"{note ?? (map[x, y].DistanceToEnd < 0 ? "." : (map[x, y].DistanceToEnd.ToString().Last().ToString()))}");
+                MapPoint m = map[x, y];
+                //var value = (int)((255f / 26) * m.Elevation);
+                //bmp.SetPixel(x, y, colors[(int)((colors.Count/26f)*m.Elevation)]);
+
+                var color = m.DistanceToEnd < 0 ? Color.FromArgb(255, 0,0,0) : colors[(int)(per * m.DistanceToEnd)];
+                bmp.SetPixel(x, y, color);
             }
-
-            Console.Write("\n");
         }
-
         
+        bmp.Save("output.png", ImageFormat.Png);
+       
+        
+        Console.WriteLine("Result");
+        // for (int y = 0; y < map.GetLength(1); y++)
+        // {
+        //     for (int x = 0; x < map.GetLength(0); x++)
+        //     {
+        //         var note = (x, y) == end ? "E" : (x, y) == start ? "S" : null;
+        //         Console.Write($"{note ?? (map[x, y].DistanceToEnd < 0 ? "." : (map[x, y].DistanceToEnd.ToString().Last().ToString()))}");
+        //     }
+        //
+        //     Console.Write("\n");
+        // }
+
         Console.WriteLine($"Part 1: {map[start.x, start.y].DistanceToEnd}");
         Console.WriteLine($"Part 2: {map.Cast<MapPoint>().Where(m => m.Elevation == 0 && m.DistanceToEnd != -1).Select(m => m.DistanceToEnd).Min().ToString()}");
         Output = map.Cast<MapPoint>().Where(m => m.Elevation == 0 && m.DistanceToEnd != -1).Select(m => m.DistanceToEnd).Min().ToString();

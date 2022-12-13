@@ -2,9 +2,9 @@
 
 static class Program
 {
-    public static void Main(string[] args)
+    public static void Main()
     {
-        Run(new Assignment12B());
+        Run(new Assignment13A());
 
         Console.WriteLine("Bye!");
     }
