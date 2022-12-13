@@ -25,62 +25,23 @@ public class Assignment13B : Assignment, IAmAnAssignment
         foreach (var s in input)
         {
             if(!string.IsNullOrEmpty(s))
-                list.Add(Parse(s));
+                list.Add(LOL.Parse(s));
         }
         
-        list.Add(Parse("[[2]]"));
-        list.Add(Parse("[[6]]"));
+        list.Add(LOL.Parse("[[2]]"));
+        list.Add(LOL.Parse("[[6]]"));
         
         list.Sort(new MyCustomComparer());
         
         var index1 = list.FindIndex(m => m.Original == "[[2]]") + 1;
         var index2 = list.FindIndex(m => m.Original == "[[6]]") + 1;
 
-        Output = (index1, index2).ToString();
+        Output = (index1* index2).ToString();
     }
 
     
 
-    public LOL Parse(string s, LOL? currentLol = null)
-    {
-        if (currentLol == null)
-        {
-            currentLol = new LOL();
-            currentLol.Original = s;
-        }
-
-        while (s.Length > 0)
-        {
-            if (s.StartsWith("["))
-            {
-                s = s.Remove(0, 1);
-                var newLol = new LOL { Parent = currentLol };
-                currentLol.Items.Add(newLol);
-                currentLol = newLol;
-            }
-            else if (s.StartsWith("]"))
-            {
-                s = s.Remove(0, 1);
-                currentLol = currentLol.Parent;
-            }
-            else if (s.Split(",").Length > 0 && int.TryParse(s.Split(",")[0], out int value1))
-            {
-                currentLol.Items.Add(new LOL { Parent = currentLol , Value = value1 });
-                s = s.Remove(0, value1.ToString().Length);
-            }
-            else if (s.StartsWith(","))
-            {
-                s = s.Remove(0, 1);
-            }
-            else if (int.TryParse(s.Split("]")[0], out int value2))
-            {
-                currentLol.Items.Add(new LOL { Parent = currentLol , Value = value2 });
-                s = s.Remove(0, value2.ToString().Length);
-            }
-        }
-
-        return currentLol;
-    }
+    
 
     public class LOL
     {
@@ -102,11 +63,55 @@ public class Assignment13B : Assignment, IAmAnAssignment
 
             return "[]";
         }
+        
+        public static LOL Parse(string s, LOL? currentLol = null)
+        {
+            if (currentLol == null)
+            {
+                currentLol = new LOL();
+                currentLol.Original = s;
+            }
+
+            while (s.Length > 0)
+            {
+                if (s.StartsWith("["))
+                {
+                    s = s.Remove(0, 1);
+                    var newLol = new LOL { Parent = currentLol };
+                    currentLol.Items.Add(newLol);
+                    currentLol = newLol;
+                }
+                else if (s.StartsWith("]"))
+                {
+                    s = s.Remove(0, 1);
+                    currentLol = currentLol.Parent;
+                }
+                else if (s.Split(",").Length > 0 && int.TryParse(s.Split(",")[0], out int value1))
+                {
+                    currentLol.Items.Add(new LOL { Parent = currentLol , Value = value1 });
+                    s = s.Remove(0, value1.ToString().Length);
+                }
+                else if (s.StartsWith(","))
+                {
+                    s = s.Remove(0, 1);
+                }
+                else if (int.TryParse(s.Split("]")[0], out int value2))
+                {
+                    currentLol.Items.Add(new LOL { Parent = currentLol , Value = value2 });
+                    s = s.Remove(0, value2.ToString().Length);
+                }
+            }
+
+            return currentLol;
+        }
     }
     public class MyCustomComparer : IComparer<LOL>
     {
         public int Compare(LOL? lol1, LOL? lol2)
         {
+            if (!string.IsNullOrWhiteSpace(lol1.Original) && !string.IsNullOrWhiteSpace(lol2.Original))
+                return Compare(LOL.Parse(lol1.Original, new LOL()), LOL.Parse(lol2.Original, new LOL()));
+            
             if (lol1 == null || lol2 == null)
             {
                 if (lol2 == null)
