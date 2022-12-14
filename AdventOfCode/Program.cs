@@ -1,23 +1,24 @@
-﻿namespace AdventOfCode;
-
-static class Program
+﻿namespace AdventOfCode
 {
-    public static void Main()
-    {
-        Run(new Assignment13B());
+	internal static class Program
+	{
+		public static void Main()
+		{
+			Run(new Assignment14A());
 
-        Console.WriteLine("Bye!");
-    }
+			Console.WriteLine("Bye!");
+		}
 
-    private static void Run(IAmAnAssignment assignment)
-    {
-        Utils.Empty();
-        Utils.Title(assignment.GetType().Name);
+		private static void Run(IAmAnAssignment assignment)
+		{
+			Utils.Empty();
+			Utils.Title(assignment.GetType().Name);
 
-        assignment.Process();
-        assignment.PrintOutput();
-        assignment.ToFileAndClipboard();
-        Utils.Empty();
-        Utils.Empty();
-    }
+			assignment.Process();
+			assignment.PrintOutput();
+			assignment.ToFileAndClipboard();
+			Utils.Empty();
+			Utils.Empty();
+		}
+	}
 }

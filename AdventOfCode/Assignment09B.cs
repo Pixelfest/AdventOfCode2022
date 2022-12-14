@@ -1,132 +1,124 @@
-﻿namespace AdventOfCode;
-
-public class Assignment09B : Assignment, IAmAnAssignment
+﻿namespace AdventOfCode
 {
-    public Assignment09B()
-    {
-        Load("Input/09.txt");
-    }
+	public class Assignment09B : Assignment, IAmAnAssignment
+	{
+		public List<Move> Moves = new();
 
-    public class Move
-    {
-        public string Direction { get; set; }
-        public int Count { get; set; }
-    }
-    
-    public List<Move> Moves = new List<Move>();
-    
-    public class Position
-    {
-        public int X { get; set; } = 0;
-        public int Y { get; set; } = 0;
+		public Assignment09B()
+		{
+			Load("Input/09.txt");
+		}
 
-        public Position(int x = 0, int y = 0)
-        {
-            this.X = x;
-            this.Y = y;
-        }
-        
-        public static Position FromMove(Position start, string direction)
-        {
-            var result = new Position { X = start.X, Y = start.Y };
+		public List<List<Position>> Rope { get; set; } = new();
 
-            switch (direction)
-            {
-                case "U":
-                    result.Y++;
-                    break;
-                case "D":
-                    result.Y--;
-                    break;
-                case "L":
-                    result.X--;
-                    break;
-                case "R":
-                    result.X++;
-                    break;
-            }
+		public override void Process()
+		{
+			var ropeLength = 10;
 
-            return result;
-        }
+			for (var i = 0; i < ropeLength; i++) Rope.Add(new List<Position> { new() });
 
-        public override bool Equals(object? obj)
-        {
-            var other = (Position?)obj;
-            if (other == null)
-                return false;
-            
-            return X == other.X && Y == other.Y;
-        }
+			foreach (var move in Moves)
+				for (var i = 0; i < move.Count; i++)
+				{
+					var head = Position.FromMove(Rope[0].Last(), move.Direction);
+					Rope[0].Add(head);
 
-        protected bool Equals(Position other)
-        {
-            return X == other.X && Y == other.Y;
-        }
+					for (var j = 1; j < ropeLength; j++)
+					{
+						var currentTail = Rope[j].Last();
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(X, Y);
-        }
-    }
+						var xD = Rope[j - 1].Last().X - currentTail.X;
+						var yD = Rope[j - 1].Last().Y - currentTail.Y;
 
-    public List<List<Position>> Rope { get; set; } = new List<List<Position>>();
-    
-    protected override void ReadLine(string line)
-    {
-        //Console.WriteLine($"Current line in file: {CurrentLine}");
-        var split = line.Split(" ");
-        
-        Moves.Add(new Move{ Direction = split[0], Count = int.Parse(split[1])});
-    }
+						if (Math.Abs(xD) < 2 && Math.Abs(yD) < 2)
+							// No movement of tail
+							Rope[j].Add(new Position(currentTail.X, currentTail.Y));
+						else
+							Rope[j].Add(new Position(currentTail.X + JustOne(xD), currentTail.Y + JustOne(yD)));
+					}
+				}
 
-    public int JustOne(int input)
-    {
-        if (input == 0)
-            return 0;
-        if (input > 0)
-            return 1;
+			//Console.WriteLine($"Total lines in file: {TotalLines}");
+			var count = Rope.Last().Distinct().Count();
+			Output = count.ToString();
+		}
 
-        return -1;
-    }
-    
-    public override void Process()
-    {
-        int ropeLength = 10;
+		protected override void ReadLine(string line)
+		{
+			//Console.WriteLine($"Current line in file: {CurrentLine}");
+			var split = line.Split(" ");
 
-        for (int i = 0; i < ropeLength; i++)
-        {
-            Rope.Add(new List<Position> { new Position() });
-        }
+			Moves.Add(new Move { Direction = split[0], Count = int.Parse(split[1]) });
+		}
 
-        foreach (var move in Moves)
-        {
-            for (int i = 0; i < move.Count; i++)
-            {
-                var head = Position.FromMove(Rope[0].Last(), move.Direction);
-                Rope[0].Add(head);
+		public int JustOne(int input)
+		{
+			if (input == 0)
+				return 0;
+			if (input > 0)
+				return 1;
 
-                for (int j = 1; j < ropeLength; j++)
-                {
-                    var currentTail = Rope[j].Last();
+			return -1;
+		}
 
-                    var xD = Rope[j - 1].Last().X - currentTail.X;
-                    var yD = Rope[j - 1].Last().Y - currentTail.Y;
+		public class Move
+		{
+			public string Direction { get; set; }
+			public int Count { get; set; }
+		}
 
-                    if (Math.Abs(xD) < 2 && Math.Abs(yD) < 2)
-                    {
-                        // No movement of tail
-                        Rope[j].Add(new Position(currentTail.X, currentTail.Y));
-                    }
-                    else
-                    {
-                        Rope[j].Add(new Position(currentTail.X + JustOne(xD), currentTail.Y + JustOne(yD)));
-                    }
-                }
-            }
-        }
+		public class Position
+		{
+			public Position(int x = 0, int y = 0)
+			{
+				X = x;
+				Y = y;
+			}
 
-        //Console.WriteLine($"Total lines in file: {TotalLines}");
-        var count = Rope.Last().Distinct().Count();
-        Output = count.ToString();
-    }
+			public int X { get; set; }
+			public int Y { get; set; }
+
+			public static Position FromMove(Position start, string direction)
+			{
+				var result = new Position { X = start.X, Y = start.Y };
+
+				switch (direction)
+				{
+					case "U":
+						result.Y++;
+						break;
+					case "D":
+						result.Y--;
+						break;
+					case "L":
+						result.X--;
+						break;
+					case "R":
+						result.X++;
+						break;
+				}
+
+				return result;
+			}
+
+			public override bool Equals(object? obj)
+			{
+				var other = (Position?)obj;
+				if (other == null)
+					return false;
+
+				return X == other.X && Y == other.Y;
+			}
+
+			protected bool Equals(Position other)
+			{
+				return X == other.X && Y == other.Y;
+			}
+
+			public override int GetHashCode()
+			{
+				return HashCode.Combine(X, Y);
+			}
+		}
+	}
 }

@@ -1,8 +1,9 @@
-﻿namespace AdventOfCode;
-
-public interface IAmAnAssignment
+﻿namespace AdventOfCode
 {
-    void Process();
-    void PrintOutput();
-    void ToFileAndClipboard();
+	public interface IAmAnAssignment
+	{
+		void Process();
+		void PrintOutput();
+		void ToFileAndClipboard();
+	}
 }
