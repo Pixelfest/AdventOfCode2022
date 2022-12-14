@@ -110,6 +110,7 @@ namespace AdventOfCode
 			}
 			
 			bmp.Save("output.png", ImageFormat.Png);
+			//Test
 		}
 	}
 }
