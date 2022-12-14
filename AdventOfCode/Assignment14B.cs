@@ -4,12 +4,13 @@ using System.Xml.Linq;
 
 namespace AdventOfCode
 {
-	public class Assignment14A : Assignment, IAmAnAssignment
+	public class Assignment14B : Assignment, IAmAnAssignment
 	{
+		// 31721 too low
 		private int[,] cave;
 		private readonly List<List<(int x, int y)>> instructions = new();
 
-		public Assignment14A()
+		public Assignment14B()
 		{
 			Load("Input/14.txt");
 		}
@@ -17,9 +18,9 @@ namespace AdventOfCode
 		public override void Process()
 		{
 			CreateMap();
-			RenderCave("Start.png");
+			RenderCave("Startb.png");
 			int result = SimulateSand(500);
-			RenderCave("Finish.png");
+			RenderCave("Finishb.png");
 			// Take the max width of the lines
 			// Take the max height of the lines + 1
 
@@ -35,15 +36,19 @@ namespace AdventOfCode
 			while (!done)
 			{
 				grainCounter++;
+				Console.WriteLine($"Graincount: {grainCounter}");
 				(int x, int y) grain = (fallLocation, 0);
 				bool stopped = false;
 				while (!stopped)
 				{
 					(grain.x, grain.y, stopped) = Fall(grain);
+
+					if (stopped && grain.x == fallLocation && grain.y == 0)
+						done = true;
 				}
 			}
 
-			return grainCounter - 1;
+			return grainCounter;
 		}
 
 		private (int x, int y, bool couldFall) Fall((int x, int y) grain)
@@ -52,34 +57,29 @@ namespace AdventOfCode
 			if (grain.y + 1 == cave.GetLength(1))
 			{
 				cave[grain.x, grain.y] = 2;
-				done=true;
-				return (0, 0, true);
+				return (grain.x, grain.y, true);
 			}
 
 			if (cave[grain.x, grain.y + 1] == 0)
 			{
 				return (grain.x, grain.y + 1, false);
 			}
-			else if (cave[grain.x - 1, grain.y + 1] == 0)
+		
+			if (cave[grain.x - 1, grain.y + 1] == 0)
 			{
 				return (grain.x - 1, grain.y + 1, false);
 			}
-			else if (cave[grain.x + 1, grain.y + 1] == 0)
+			
+			if (cave[grain.x + 1, grain.y + 1] == 0)
 			{
 				return (grain.x + 1, grain.y + 1, false);
 			}
 
 			// Grain has stopped
 			cave[grain.x, grain.y] = 2;
-			return (0, 0, true);
+			return (grain.x, grain.y, true);
 		}
 		
-		public int[] GetRow(int[,] matrix, int rowNumber)
-		{
-			return Enumerable.Range(0, matrix.GetLength(1))
-				.Select(x => matrix[rowNumber, x])
-				.ToArray();
-		}
 		protected override void ReadLine(string line)
 		{
 			var coordinates = line.Split(" -> ");
@@ -96,7 +96,7 @@ namespace AdventOfCode
 
 		private void CreateMap()
 		{
-			var maxX = instructions.SelectMany(i => i.Select(c => c.x)).Max() + 1;
+			var maxX = instructions.SelectMany(i => i.Select(c => c.x)).Max() + 1 + 300;
 			var maxY = instructions.SelectMany(i => i.Select(c => c.y)).Max() + 2;
 
 			cave = new int[maxX, maxY];
